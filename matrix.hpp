@@ -9,8 +9,14 @@
 #include <stdexcept>
 #include <tuple>
 #include <cmath>
+#include <iostream>
 
 using namespace std;
+
+struct MatrixSize {
+    int rows;
+    int cols;
+};
 
 class Matrix {
 private:
@@ -21,10 +27,12 @@ public:
     Matrix(int r, int c);
     Matrix(vector<double> v);
     Matrix(const Matrix& m);
-    tuple<int, int> getSize();
+    ~Matrix();
+    MatrixSize getSize() const;
     void setValue(int row, int col, double val);
-    double getValue(int row, int col);
+    double getValue(int row, int col) const;
     void clear();
+    friend ostream & operator << (ostream &out, const Matrix &m);
 };
 
 
