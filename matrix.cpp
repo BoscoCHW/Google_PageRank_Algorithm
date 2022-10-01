@@ -35,7 +35,7 @@ Matrix::Matrix(const Matrix& m) {
     this->matrix = vector(matrixSize.rows, vector<double>(matrixSize.cols));
     for (int i = 0; i < matrixSize.rows; ++i) {
         for (int j = 0; j < matrixSize.cols; ++j) {
-            matrix[i][j] = m.matrix.at(i).at(j);
+            this->matrix[i][j] = m.matrix.at(i).at(j); // throw out of range error somehow!
         }
     }
 //    copy(m.matrix.begin(), m.matrix.end(), back_inserter(matrix));
@@ -150,16 +150,46 @@ Matrix Matrix::operator--(int) {
     return temp;
 }
 
+// somehow not called on assignment!
 Matrix &Matrix::operator=(Matrix rhs) {
     mySwap(*this, rhs);
     return *this;
 }
 
-void Matrix::mySwap(Matrix &m1, Matrix &m2) {
+void mySwap(Matrix &m1, Matrix &m2) {
     m1.matrix.clear();
     cout << m1 << endl;
     MatrixSize matrixSize = m2.getSize();
     for (int i = 0; matrixSize.rows; i++) {
         m1.matrix.push_back(m2.matrix.at(i));
     }
+}
+
+Matrix &Matrix::operator*=(const Matrix &rhs) {
+    MatrixSize mySize = this->getSize();
+    MatrixSize rhsSize = rhs.getSize();
+    if (mySize.cols != rhsSize.rows) {
+        throw invalid_argument("Number of rows of rhs should match number of rows of lhs");
+    }
+
+    vector<vector<double>> m;
+    for (int i = 0; i < mySize.rows; ++i) {
+        vector<double> v;
+        for (int j = 0; j < rhsSize.cols; ++j) {
+            double sumOfProd = 0;
+            for (int p = 0; p < rhsSize.rows; ++p) {
+                sumOfProd += rhs.matrix[p][j] * this->matrix[i][p];
+            }
+            v.push_back(sumOfProd);
+        }
+        m.push_back(v);
+    }
+
+    this->matrix = m;
+    return *this;
+}
+
+Matrix operator*(Matrix lhs, const Matrix &rhs) {
+    lhs *= rhs;
+    return lhs;
 };

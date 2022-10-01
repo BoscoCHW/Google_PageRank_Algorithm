@@ -6,16 +6,14 @@
 #include "matrix.hpp"
 using namespace std;
 int main() {
-    vector<double> v{2.2, 3, 4, 5, 2, 3, 4, 5, 9};
-    Matrix m{v};
+    vector<double> v1{1,2,3,4};
+    Matrix m{v1};
+    Matrix b{4,2};
+    b.setValue(0,0,1);
+    b.setValue(0,1,2);
+    b.setValue(1,0,3);
 
-    Matrix b{3};
-    b.setValue(0,0,9);
-    b.setValue(0,1,8);
-    m = b;
-    cout << m << endl;
-
-    m.setValue(0,1,100);
+    m *= b;
     cout << m << endl;
     cout << b << endl;
     return 0;

@@ -42,7 +42,10 @@ public:
     Matrix& operator--();
     Matrix operator--(int);
     Matrix& operator=(Matrix rhs);
-    void mySwap(Matrix& m1, Matrix& m2);
+    friend void mySwap(Matrix& m1, Matrix& m2);
+
+    Matrix& operator*=(const Matrix& rhs);
+    friend Matrix operator*(Matrix lhs, const Matrix& rhs);
 };
 
 
