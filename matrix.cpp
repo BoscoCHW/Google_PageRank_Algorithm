@@ -100,4 +100,66 @@ ostream & operator<< (ostream &out, const Matrix &m) {
     }
     out << "]\n";
     return out;
+}
+
+bool operator==(const Matrix &lhs, const Matrix &rhs) {
+    MatrixSize matrixSize1 = lhs.getSize();
+    MatrixSize matrixSize2 = rhs.getSize();
+    if (matrixSize1.rows != matrixSize2.rows || matrixSize1.cols != matrixSize2.cols) {
+        return false;
+    }
+    for (int i = 0; i < matrixSize1.rows; ++i) {
+        for (int j = 0; j < matrixSize2.cols; ++j) {
+            if (std::abs(lhs.matrix.at(i).at(j) - lhs.matrix.at(i).at(j)) < TOLERANCE) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+Matrix &Matrix::operator++() {
+    MatrixSize matrixSize = this->getSize();
+    for (int i = 0; i < matrixSize.rows; ++i) {
+        for (int j = 0; j < matrixSize.cols; ++j) {
+            this->matrix[i][j] += 1;
+        }
+    }
+    return *this;
+}
+
+Matrix Matrix::operator++(int) {
+    Matrix temp(*this);
+    operator++();
+    return temp;
+};
+
+Matrix &Matrix::operator--() {
+    MatrixSize matrixSize = this->getSize();
+    for (int i = 0; i < matrixSize.rows; ++i) {
+        for (int j = 0; j < matrixSize.cols; ++j) {
+            this->matrix[i][j] -= 1;
+        }
+    }
+    return *this;
+}
+
+Matrix Matrix::operator--(int) {
+    Matrix temp(*this);
+    operator--();
+    return temp;
+}
+
+Matrix &Matrix::operator=(Matrix rhs) {
+    mySwap(*this, rhs);
+    return *this;
+}
+
+void Matrix::mySwap(Matrix &m1, Matrix &m2) {
+    m1.matrix.clear();
+    cout << m1 << endl;
+    MatrixSize matrixSize = m2.getSize();
+    for (int i = 0; matrixSize.rows; i++) {
+        m1.matrix.push_back(m2.matrix.at(i));
+    }
 };

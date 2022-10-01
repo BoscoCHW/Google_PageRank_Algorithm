@@ -8,10 +8,15 @@ using namespace std;
 int main() {
     vector<double> v{2.2, 3, 4, 5, 2, 3, 4, 5, 9};
     Matrix m{v};
-    std::cout << m << std::endl;
-    m.clear();
+
+    Matrix b{3};
+    b.setValue(0,0,9);
+    b.setValue(0,1,8);
+    m = b;
     cout << m << endl;
-    m.setValue(2,4 ,100);
+
+    m.setValue(0,1,100);
     cout << m << endl;
+    cout << b << endl;
     return 0;
 }

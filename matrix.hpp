@@ -13,6 +13,8 @@
 
 using namespace std;
 
+constexpr double TOLERANCE = 0.0001;
+
 struct MatrixSize {
     int rows;
     int cols;
@@ -33,6 +35,14 @@ public:
     double getValue(int row, int col) const;
     void clear();
     friend ostream & operator << (ostream &out, const Matrix &m);
+    friend bool operator== (const Matrix& lhs, const Matrix& rhs);
+    friend bool operator!= (const Matrix& lhs, const Matrix& rhs) { return !(lhs == rhs); }
+    Matrix& operator++();
+    Matrix operator++(int);
+    Matrix& operator--();
+    Matrix operator--(int);
+    Matrix& operator=(Matrix rhs);
+    void mySwap(Matrix& m1, Matrix& m2);
 };
 
 
