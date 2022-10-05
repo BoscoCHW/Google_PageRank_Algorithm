@@ -9,7 +9,7 @@
 #include "matrix.hpp"
 using namespace std;
 
-Matrix createConnectivityMatrix(const string filename) {
+Matrix createConnectivityMatrixFromFile(const string filename) {
     ifstream connectivity(filename);
     if (!connectivity.is_open()) {
         cout << "Cannot open file." << endl;
@@ -32,7 +32,8 @@ Matrix createConnectivityMatrix(const string filename) {
 
 int main() {
 
-    Matrix connectivityMatrix = createConnectivityMatrix("connectivityMatrix.txt");
+
+    Matrix connectivityMatrix = createConnectivityMatrixFromFile("connectivityMatrix.txt");
     MatrixSize matrixSize = connectivityMatrix.getSize();
     Matrix stochasticMatrix(matrixSize.rows, matrixSize.cols);
 

@@ -25,9 +25,9 @@ private:
     vector<vector<double>> matrix;
 public:
     Matrix(): matrix{{0}} {};
-    Matrix(int n);
+    explicit Matrix(int n);
     Matrix(int r, int c);
-    Matrix(vector<double> v);
+    explicit Matrix(const vector<double> &v);
     explicit Matrix(vector<vector<double>> m);
     Matrix(const Matrix& m);
     ~Matrix();

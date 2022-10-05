@@ -18,8 +18,8 @@ Matrix::Matrix(int r, int c) {
     matrix = vector(r, vector<double>(c, 0.0));
 }
 
-Matrix::Matrix(vector<double> v) {
-    int vectorSize = v.size();
+Matrix::Matrix(const vector<double> &v) {
+    unsigned long vectorSize = v.size();
     double squareRoot = sqrt(vectorSize);
 
     if (squareRoot - floor(squareRoot) == 0) {
@@ -29,7 +29,7 @@ Matrix::Matrix(vector<double> v) {
     }
 }
 
-Matrix::Matrix(vector<vector<double>> m): matrix(m){
+Matrix::Matrix(vector<vector<double>> m): matrix(std::move(m)){
 }
 
 Matrix::Matrix(const Matrix& m) {
@@ -49,8 +49,7 @@ Matrix::Matrix(const Matrix& m) {
 
 }
 
-Matrix::~Matrix() {
-}
+Matrix::~Matrix() = default;
 
 MatrixSize Matrix::getSize() const {
     int rows = matrix.size();
@@ -135,7 +134,7 @@ Matrix Matrix::operator++(int) {
     Matrix temp(*this);
     operator++();
     return temp;
-};
+}
 
 Matrix &Matrix::operator--() {
     MatrixSize matrixSize = this->getSize();
@@ -228,7 +227,7 @@ Matrix &Matrix::operator-=(const Matrix &rhs) {
         }
     }
     return *this;
-};
+}
 
 Matrix operator-(Matrix lhs, const Matrix &rhs) {
     lhs -= rhs;
