@@ -29,6 +29,9 @@ Matrix::Matrix(vector<double> v) {
     }
 }
 
+Matrix::Matrix(vector<vector<double>> m): matrix(m){
+}
+
 Matrix::Matrix(const Matrix& m) {
     MatrixSize matrixSize = m.getSize();
 
@@ -158,9 +161,9 @@ Matrix &Matrix::operator=(Matrix rhs) {
 
 void mySwap(Matrix &m1, Matrix &m2) {
     m1.matrix.clear();
-    cout << m1 << endl;
+//    cout << m1 << endl;
     MatrixSize matrixSize = m2.getSize();
-    for (int i = 0; matrixSize.rows; i++) {
+    for (int i = 0; i < matrixSize.rows; ++i) {
         m1.matrix.push_back(m2.matrix.at(i));
     }
 }
@@ -169,7 +172,7 @@ Matrix &Matrix::operator*=(const Matrix &rhs) {
     MatrixSize mySize = this->getSize();
     MatrixSize rhsSize = rhs.getSize();
     if (mySize.cols != rhsSize.rows) {
-        throw invalid_argument("Number of rows of rhs should match number of rows of lhs");
+        throw invalid_argument("Number of rows of rhs should match number of cols of lhs");
     }
 
     vector<vector<double>> m;
@@ -192,4 +195,57 @@ Matrix &Matrix::operator*=(const Matrix &rhs) {
 Matrix operator*(Matrix lhs, const Matrix &rhs) {
     lhs *= rhs;
     return lhs;
+}
+
+Matrix &Matrix::operator+=(const Matrix &rhs) {
+    MatrixSize ms1 = this->getSize();
+    MatrixSize ms2 = rhs.getSize();
+    if (ms1.rows != ms2.rows || ms1.cols != ms2.cols) {
+        throw invalid_argument("Different sizes of matrix.");
+    }
+    for (int i = 0; i < ms1.rows; ++i) {
+        for (int j = 0; j < ms1.cols; ++j) {
+            matrix[i][j] += rhs.matrix[i][j];
+        }
+    }
+    return *this;
+}
+
+Matrix operator+(Matrix lhs, const Matrix &rhs) {
+    lhs += rhs;
+    return lhs;
+}
+
+Matrix &Matrix::operator-=(const Matrix &rhs) {
+    MatrixSize ms1 = this->getSize();
+    MatrixSize ms2 = rhs.getSize();
+    if (ms1.rows != ms2.rows || ms1.cols != ms2.cols) {
+        throw invalid_argument("Different sizes of matrix.");
+    }
+    for (int i = 0; i < ms1.rows; ++i) {
+        for (int j = 0; j < ms1.cols; ++j) {
+            matrix[i][j] -= rhs.matrix[i][j];
+        }
+    }
+    return *this;
 };
+
+Matrix operator-(Matrix lhs, const Matrix &rhs) {
+    lhs -= rhs;
+    return lhs;
+}
+
+Matrix &Matrix::operator*=(const double rhs) {
+    MatrixSize ms = getSize();
+    for (int i = 0; i < ms.rows; ++i) {
+        for (int j = 0; j < ms.cols; ++j) {
+            matrix[i][j] *= rhs;
+        }
+    }
+    return *this;
+}
+
+Matrix operator*(Matrix lhs, const double rhs) {
+    lhs *= rhs;
+    return lhs;
+}

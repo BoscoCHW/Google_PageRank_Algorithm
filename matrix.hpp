@@ -28,6 +28,7 @@ public:
     Matrix(int n);
     Matrix(int r, int c);
     Matrix(vector<double> v);
+    explicit Matrix(vector<vector<double>> m);
     Matrix(const Matrix& m);
     ~Matrix();
     MatrixSize getSize() const;
@@ -44,8 +45,17 @@ public:
     Matrix& operator=(Matrix rhs);
     friend void mySwap(Matrix& m1, Matrix& m2);
 
+    Matrix& operator+=(const Matrix& rhs);
+    friend Matrix operator+(Matrix lhs, const Matrix& rhs);
+
+    Matrix& operator-=(const Matrix& rhs);
+    friend Matrix operator-(Matrix lhs, const Matrix& rhs);
+
     Matrix& operator*=(const Matrix& rhs);
     friend Matrix operator*(Matrix lhs, const Matrix& rhs);
+
+    Matrix& operator*=(const double rhs);
+    friend Matrix operator*(Matrix lhs, const double rhs);
 };
 
 
