@@ -30,10 +30,7 @@ Matrix createConnectivityMatrixFromFile(const string filename) {
     return matrix;
 }
 
-int main() {
-
-
-    Matrix connectivityMatrix = createConnectivityMatrixFromFile("connectivityMatrix.txt");
+Matrix createStochasticMatrix(const Matrix &connectivityMatrix) {
     MatrixSize matrixSize = connectivityMatrix.getSize();
     Matrix stochasticMatrix(matrixSize.rows, matrixSize.cols);
 
@@ -59,6 +56,22 @@ int main() {
 
         }
     }
+    return stochasticMatrix;
+}
+
+void rankPages(Matrix &probabilityMatrix)
+{
+
+}
+
+int main() {
+
+
+    Matrix connectivityMatrix = createConnectivityMatrixFromFile("../connectivityMatrix.txt");
+
+    Matrix stochasticMatrix = createStochasticMatrix(connectivityMatrix);
+
+    MatrixSize matrixSize = stochasticMatrix.getSize();
     vector<double> evenDistribution;
     for (int i = 0; i < matrixSize.rows; ++i) {
         evenDistribution.push_back(1.0 / matrixSize.rows);
@@ -68,7 +81,6 @@ int main() {
 
     Matrix Q(evenDistribution);
     Matrix probabilityMatrix = stochasticMatrix * p + Q * (1 - p);
-    cout << probabilityMatrix << endl;
 
     Matrix rank(matrixSize.rows, 1);
     for (int i = 0; i < matrixSize.rows; ++i) {

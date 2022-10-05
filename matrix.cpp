@@ -90,7 +90,7 @@ ostream & operator<< (ostream &out, const Matrix &m) {
         out << "[";
         for (int j = 0; j < matrixSize.cols; ++j) {
             out << v.at(j);
-            if (j != v.size() - 1) {
+            if (j != (int)v.size() - 1) {
                 out << ", ";
             }
         }
