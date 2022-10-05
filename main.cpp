@@ -9,6 +9,8 @@
 #include "matrix.hpp"
 using namespace std;
 
+constexpr double MARKOV_THRESHOLD = 0.0001;
+
 Matrix createConnectivityMatrixFromFile(const string filename) {
     ifstream connectivity(filename);
     if (!connectivity.is_open()) {
@@ -16,16 +18,14 @@ Matrix createConnectivityMatrixFromFile(const string filename) {
     }
     string line;
     int num;
-    vector<vector<double>> m;
+    vector<double> nums;
     while (getline(connectivity, line)) {
         istringstream iss(line);
-        vector<double> v;
         while (iss >> num) {
-            v.push_back(num);
+            nums.push_back(num);
         }
-        m.push_back(v);
     }
-    Matrix matrix(m);
+    Matrix matrix(nums);
 
     return matrix;
 }
@@ -59,39 +59,16 @@ Matrix createStochasticMatrix(const Matrix &connectivityMatrix) {
     return stochasticMatrix;
 }
 
-void rankPages(Matrix &probabilityMatrix)
-{
-
-}
-
-int main() {
-
-
-    Matrix connectivityMatrix = createConnectivityMatrixFromFile("../connectivityMatrix.txt");
-
-    Matrix stochasticMatrix = createStochasticMatrix(connectivityMatrix);
-
-    MatrixSize matrixSize = stochasticMatrix.getSize();
-    vector<double> evenDistribution;
-    for (int i = 0; i < matrixSize.rows; ++i) {
-        evenDistribution.push_back(1.0 / matrixSize.rows);
-    }
-
-    double p = 0.85;
-
-    Matrix Q(evenDistribution);
-    Matrix probabilityMatrix = stochasticMatrix * p + Q * (1 - p);
-
+void rankPages(Matrix &probabilityMatrix) {
+    MatrixSize matrixSize = probabilityMatrix.getSize();
     Matrix rank(matrixSize.rows, 1);
     for (int i = 0; i < matrixSize.rows; ++i) {
         rank.setValue(i, 0, 1.0);
     }
 
-    double threshold = 0.001;
-
     while (true) {
         Matrix newRank = probabilityMatrix * rank;
-        if (abs(newRank.getValue(0, 0) - rank.getValue(0, 0)) < threshold) {
+        if (abs(newRank.getValue(0, 0) - rank.getValue(0, 0)) < MARKOV_THRESHOLD) {
             rank = newRank;
             break;
         }
@@ -108,5 +85,27 @@ int main() {
         rank.setValue(i, 0, rank.getValue(i, 0) / sumOfRank);
     }
     cout << rank << endl;
+}
+
+int main() {
+
+
+    Matrix connectivityMatrix = createConnectivityMatrixFromFile("../connectivityMatrix.txt");
+
+    Matrix stochasticMatrix = createStochasticMatrix(connectivityMatrix);
+
+    MatrixSize matrixSize = stochasticMatrix.getSize();
+    vector<double> evenDistribution;
+    for (int i = 0; i < matrixSize.rows * matrixSize.cols; ++i) {
+        evenDistribution.push_back(1.0 / matrixSize.rows);
+    }
+
+    double p = 0.85;
+
+    Matrix Q(evenDistribution);
+    Matrix probabilityMatrix = stochasticMatrix * p + Q * (1 - p);
+
+    rankPages(probabilityMatrix);
+
     return 0;
 }

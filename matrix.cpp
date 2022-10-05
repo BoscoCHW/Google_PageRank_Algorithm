@@ -22,14 +22,20 @@ Matrix::Matrix(const vector<double> &v) {
     unsigned long vectorSize = v.size();
     double squareRoot = sqrt(vectorSize);
 
-    if (squareRoot - floor(squareRoot) == 0) {
-        matrix = vector(vectorSize, v);
-    } else {
+    if (squareRoot - floor(squareRoot) != 0) {
         throw invalid_argument("Please provide a vector with a size of an integer square root.");
     }
-}
+    int matrixDimension = (int) squareRoot;
+    vector<vector<double>> m(matrixDimension);
+    for (int i = 0; i < matrixDimension; ++i) {
+        vector<double> vector(matrixDimension);
+        for (int j = 0; j < matrixDimension; ++j) {
+            vector[j] = v.at(i * matrixDimension + j);
+        }
+        m[i] = vector;
+    }
 
-Matrix::Matrix(vector<vector<double>> m): matrix(std::move(m)){
+    matrix = m;
 }
 
 Matrix::Matrix(const Matrix& m) {
@@ -38,14 +44,9 @@ Matrix::Matrix(const Matrix& m) {
     this->matrix = vector(matrixSize.rows, vector<double>(matrixSize.cols));
     for (int i = 0; i < matrixSize.rows; ++i) {
         for (int j = 0; j < matrixSize.cols; ++j) {
-            this->matrix[i][j] = m.matrix.at(i).at(j); // throw out of range error somehow!
+            this->matrix[i][j] = m.matrix.at(i).at(j);
         }
     }
-//    copy(m.matrix.begin(), m.matrix.end(), back_inserter(matrix));
-
-//    for (const vector<double> &v : m.matrix) {
-//        this->matrix.push_back(v);
-//    }
 
 }
 
@@ -160,7 +161,6 @@ Matrix &Matrix::operator=(Matrix rhs) {
 
 void mySwap(Matrix &m1, Matrix &m2) {
     m1.matrix.clear();
-//    cout << m1 << endl;
     MatrixSize matrixSize = m2.getSize();
     for (int i = 0; i < matrixSize.rows; ++i) {
         m1.matrix.push_back(m2.matrix.at(i));

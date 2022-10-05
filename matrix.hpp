@@ -28,7 +28,6 @@ public:
     explicit Matrix(int n);
     Matrix(int r, int c);
     explicit Matrix(const vector<double> &v);
-    explicit Matrix(vector<vector<double>> m);
     Matrix(const Matrix& m);
     ~Matrix();
     MatrixSize getSize() const;
