@@ -59,7 +59,7 @@ Matrix createStochasticMatrix(const Matrix &connectivityMatrix) {
     return stochasticMatrix;
 }
 
-void rankPages(Matrix &probabilityMatrix) {
+Matrix rankPages(Matrix &probabilityMatrix) {
     MatrixSize matrixSize = probabilityMatrix.getSize();
     Matrix rank(matrixSize.rows, 1);
     for (int i = 0; i < matrixSize.rows; ++i) {
@@ -84,7 +84,7 @@ void rankPages(Matrix &probabilityMatrix) {
     for (int i = 0; i < matrixSize.rows; ++i) {
         rank.setValue(i, 0, rank.getValue(i, 0) / sumOfRank);
     }
-    cout << rank << endl;
+    return rank;
 }
 
 int main() {
@@ -95,6 +95,7 @@ int main() {
     Matrix stochasticMatrix = createStochasticMatrix(connectivityMatrix);
 
     MatrixSize matrixSize = stochasticMatrix.getSize();
+
     vector<double> evenDistribution;
     for (int i = 0; i < matrixSize.rows * matrixSize.cols; ++i) {
         evenDistribution.push_back(1.0 / matrixSize.rows);
@@ -105,7 +106,14 @@ int main() {
     Matrix Q(evenDistribution);
     Matrix probabilityMatrix = stochasticMatrix * p + Q * (1 - p);
 
-    rankPages(probabilityMatrix);
+    Matrix rank = rankPages(probabilityMatrix);
+
+    MatrixSize rankSize = rank.getSize();
+    char pageName = 'A';
+    for (int i = 0; i < rankSize.rows; ++i) {
+        double pageRank = rank.getValue(i, 0) * 100;
+        printf("Page %c: %0.2f%%\n", pageName++, pageRank);
+    }
 
     return 0;
 }
