@@ -309,7 +309,7 @@ Matrix operator+(Matrix lhs, const Matrix &rhs) {
 
 /**
  * Overload -= operator
- * Perform matrix substraction
+ * Perform matrix subtraction
  */
 Matrix &Matrix::operator-=(const Matrix &rhs) {
     MatrixSize ms1 = this->getSize();
