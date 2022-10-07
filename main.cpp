@@ -9,6 +9,9 @@
 #include "matrix.hpp"
 using namespace std;
 
+/**
+ * Threshold used in the Markov Process.
+ */
 constexpr double MARKOV_THRESHOLD = 0.0001;
 
 /**
@@ -37,7 +40,7 @@ Matrix createConnectivityMatrixFromFile(const string filename) {
 
 /**
  * Given a connectivity matrix, create a stochastic matrix
- * with normalized out degree
+ * with normalized probability
  * @param connectivityMatrix
  * @return stochastic matrix
  */
@@ -70,6 +73,12 @@ Matrix createStochasticMatrix(const Matrix &connectivityMatrix) {
     return stochasticMatrix;
 }
 
+/**
+ * Create a probability matrix from stochastic matrix
+ * Factor in random walk probability
+ * @param stochasticMatrix
+ * @return probability matrix
+ */
 Matrix createProbabilityMatrix(Matrix &stochasticMatrix) {
     MatrixSize matrixSize = stochasticMatrix.getSize();
 
@@ -85,6 +94,12 @@ Matrix createProbabilityMatrix(Matrix &stochasticMatrix) {
     return stochasticMatrix * p + Q * (1 - p);
 }
 
+/**
+ * Given the probability matrix for a web,
+ * rank pages using the Google PageRank algorithm
+ * @param probabilityMatrix
+ * @return rank
+ */
 Matrix rankPages(Matrix &probabilityMatrix) {
     MatrixSize matrixSize = probabilityMatrix.getSize();
 
@@ -114,6 +129,10 @@ Matrix rankPages(Matrix &probabilityMatrix) {
     return rank;
 }
 
+/**
+ * Read a file named "connectivity.txt" containing the connectivity matrix of a web
+ * Rank each page using the Google PageRank algorithm.
+ */
 int main() {
 
     Matrix connectivityMatrix = createConnectivityMatrixFromFile("../connectivity.txt");
