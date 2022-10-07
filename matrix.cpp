@@ -4,20 +4,36 @@
 
 #include "matrix.hpp"
 
-Matrix::Matrix(int n) {
+/**
+ * Matrix constructor:
+ * Create a matrix of size n * n
+ * @param n
+ */
+Matrix::Matrix(const int n) {
     if (n < 1) {
         throw invalid_argument("Please provide a positive integer.");
     }
     matrix = vector(n, vector<double>(n, 0.0));
 }
 
-Matrix::Matrix(int r, int c) {
+/**
+ * Matrix constructor:
+ * Create a matrix of size r * c
+ * @param r number of rows
+ * @param c number of columns
+ */
+Matrix::Matrix(const int r, const int c) {
     if (r < 1 || c < 1) {
         throw invalid_argument("Please provide positive integers.");
     }
     matrix = vector(r, vector<double>(c, 0.0));
 }
 
+/**
+ * Matrix constructor:
+ * Create a matrix from a vector, reshaped into a square matrix
+ * @param v vector of size of an square number
+ */
 Matrix::Matrix(const vector<double> &v) {
     unsigned long vectorSize = v.size();
     double squareRoot = sqrt(vectorSize);
@@ -38,6 +54,10 @@ Matrix::Matrix(const vector<double> &v) {
     matrix = m;
 }
 
+/**
+ * Matrix copy constructor
+ * @param m
+ */
 Matrix::Matrix(const Matrix& m) {
     MatrixSize matrixSize = m.getSize();
 
@@ -50,8 +70,15 @@ Matrix::Matrix(const Matrix& m) {
 
 }
 
+/**
+ * Matrix destructor
+ */
 Matrix::~Matrix() = default;
 
+/**
+ * Return the size of the matrix
+ * @return MatrixSize
+ */
 MatrixSize Matrix::getSize() const {
     int rows = matrix.size();
     int cols = matrix.at(0).size();
@@ -59,6 +86,12 @@ MatrixSize Matrix::getSize() const {
     return ms;
 }
 
+/**
+ * Set value to a specified cell of the matrix
+ * @param row
+ * @param col
+ * @param val
+ */
 void Matrix::setValue(int row, int col, double val) {
     MatrixSize matrixSiz = getSize();
     if (row < 0 || row >= matrixSiz.rows || col < 0 || col >= matrixSiz.cols) {
@@ -66,6 +99,13 @@ void Matrix::setValue(int row, int col, double val) {
     }
     matrix[row][col] = val;
 }
+
+/**
+ * Get value of a cell in the matrix
+ * @param row
+ * @param col
+ * @return the value at matrix[row][col]
+ */
 double Matrix::getValue(int row, int col) const {
     MatrixSize matrixSiz = getSize();
     if (row < 0 || row >= matrixSiz.rows || col < 0 || col >= matrixSiz.cols) {
@@ -74,6 +114,9 @@ double Matrix::getValue(int row, int col) const {
     return matrix.at(row).at(col);
 }
 
+/**
+ * Change value of all cells to 0.0
+ */
 void Matrix::clear() {
     MatrixSize matrixSiz = getSize();
     for (int i = 0; i < matrixSiz.rows; ++i) {
@@ -83,6 +126,13 @@ void Matrix::clear() {
     }
 }
 
+/**
+ * Overload insertion operator
+ * Print information of the matrix
+ * @param out
+ * @param m
+ * @return ostream
+ */
 ostream & operator<< (ostream &out, const Matrix &m) {
     MatrixSize matrixSize = m.getSize();
     out << "[";
@@ -105,6 +155,12 @@ ostream & operator<< (ostream &out, const Matrix &m) {
     return out;
 }
 
+/**
+ * Overload equals operator
+ * @param lhs
+ * @param rhs
+ * @return true if both matrices have the same size and same values in each cell
+ */
 bool operator==(const Matrix &lhs, const Matrix &rhs) {
     MatrixSize matrixSize1 = lhs.getSize();
     MatrixSize matrixSize2 = rhs.getSize();
@@ -121,6 +177,10 @@ bool operator==(const Matrix &lhs, const Matrix &rhs) {
     return true;
 }
 
+/**
+ * Overload prefix increment operator
+ * Increase value of each cell by 1
+ */
 Matrix &Matrix::operator++() {
     MatrixSize matrixSize = this->getSize();
     for (int i = 0; i < matrixSize.rows; ++i) {
@@ -131,12 +191,19 @@ Matrix &Matrix::operator++() {
     return *this;
 }
 
+/**
+ * Overload postfix increment operator
+ */
 Matrix Matrix::operator++(int) {
     Matrix temp(*this);
     operator++();
     return temp;
 }
 
+/**
+ * Overload prefix decrement operator
+ * Decrease value of each cell by 1
+ */
 Matrix &Matrix::operator--() {
     MatrixSize matrixSize = this->getSize();
     for (int i = 0; i < matrixSize.rows; ++i) {
@@ -147,18 +214,28 @@ Matrix &Matrix::operator--() {
     return *this;
 }
 
+/**
+ * Overload postfix decrement operator
+ */
 Matrix Matrix::operator--(int) {
     Matrix temp(*this);
     operator--();
     return temp;
 }
 
-// somehow not called on assignment!
+/**
+ * Overload assignment constructor
+ */
 Matrix &Matrix::operator=(Matrix rhs) {
     mySwap(*this, rhs);
     return *this;
 }
 
+/**
+ * Assign value of each cell of matrix 2 to matrix 1
+ * @param m1 Matrix 1
+ * @param m2 Matrix 2
+ */
 void mySwap(Matrix &m1, Matrix &m2) {
     m1.matrix.clear();
     MatrixSize matrixSize = m2.getSize();
@@ -167,6 +244,10 @@ void mySwap(Matrix &m1, Matrix &m2) {
     }
 }
 
+/**
+ * Overload *= operator
+ * Perform matrix multiplication
+ */
 Matrix &Matrix::operator*=(const Matrix &rhs) {
     MatrixSize mySize = this->getSize();
     MatrixSize rhsSize = rhs.getSize();
@@ -191,11 +272,19 @@ Matrix &Matrix::operator*=(const Matrix &rhs) {
     return *this;
 }
 
+/**
+ * Overload * operator
+ * Perform matrix multiplication
+ */
 Matrix operator*(Matrix lhs, const Matrix &rhs) {
     lhs *= rhs;
     return lhs;
 }
 
+/**
+ * Overload += operator
+ * Perform matrix addition
+ */
 Matrix &Matrix::operator+=(const Matrix &rhs) {
     MatrixSize ms1 = this->getSize();
     MatrixSize ms2 = rhs.getSize();
@@ -210,11 +299,18 @@ Matrix &Matrix::operator+=(const Matrix &rhs) {
     return *this;
 }
 
+/**
+ * Overload + operator
+ */
 Matrix operator+(Matrix lhs, const Matrix &rhs) {
     lhs += rhs;
     return lhs;
 }
 
+/**
+ * Overload -= operator
+ * Perform matrix substraction
+ */
 Matrix &Matrix::operator-=(const Matrix &rhs) {
     MatrixSize ms1 = this->getSize();
     MatrixSize ms2 = rhs.getSize();
@@ -229,11 +325,17 @@ Matrix &Matrix::operator-=(const Matrix &rhs) {
     return *this;
 }
 
+/**
+ * Overload - operator
+ */
 Matrix operator-(Matrix lhs, const Matrix &rhs) {
     lhs -= rhs;
     return lhs;
 }
 
+/**
+ * Overload *= operator for scalar multiplication
+ */
 Matrix &Matrix::operator*=(const double rhs) {
     MatrixSize ms = getSize();
     for (int i = 0; i < ms.rows; ++i) {
@@ -244,6 +346,9 @@ Matrix &Matrix::operator*=(const double rhs) {
     return *this;
 }
 
+/**
+ * Overload * operator for scalar multiplication
+ */
 Matrix operator*(Matrix lhs, const double rhs) {
     lhs *= rhs;
     return lhs;

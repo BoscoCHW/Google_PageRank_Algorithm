@@ -15,6 +15,9 @@ using namespace std;
 
 constexpr double TOLERANCE = 0.0001;
 
+/**
+ * A container for the size of a matrix
+ */
 struct MatrixSize {
     int rows;
     int cols;

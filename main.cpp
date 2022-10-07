@@ -11,6 +11,11 @@ using namespace std;
 
 constexpr double MARKOV_THRESHOLD = 0.0001;
 
+/**
+ * Create a connectivity matrix from a text file
+ * @param filename
+ * @return a connectivity matrix
+ */
 Matrix createConnectivityMatrixFromFile(const string filename) {
     ifstream connectivity(filename);
     if (!connectivity.is_open()) {
@@ -30,6 +35,12 @@ Matrix createConnectivityMatrixFromFile(const string filename) {
     return matrix;
 }
 
+/**
+ * Given a connectivity matrix, create a stochastic matrix
+ * with normalized out degree
+ * @param connectivityMatrix
+ * @return stochastic matrix
+ */
 Matrix createStochasticMatrix(const Matrix &connectivityMatrix) {
     MatrixSize matrixSize = connectivityMatrix.getSize();
     Matrix stochasticMatrix(matrixSize.rows, matrixSize.cols);
@@ -59,8 +70,24 @@ Matrix createStochasticMatrix(const Matrix &connectivityMatrix) {
     return stochasticMatrix;
 }
 
+Matrix createProbabilityMatrix(Matrix &stochasticMatrix) {
+    MatrixSize matrixSize = stochasticMatrix.getSize();
+
+    vector<double> evenDistribution;
+    for (int i = 0; i < matrixSize.rows * matrixSize.cols; ++i) {
+        evenDistribution.push_back(1.0 / matrixSize.rows);
+    }
+
+    constexpr double p = 0.85;
+
+    Matrix Q(evenDistribution);
+
+    return stochasticMatrix * p + Q * (1 - p);
+}
+
 Matrix rankPages(Matrix &probabilityMatrix) {
     MatrixSize matrixSize = probabilityMatrix.getSize();
+
     Matrix rank(matrixSize.rows, 1);
     for (int i = 0; i < matrixSize.rows; ++i) {
         rank.setValue(i, 0, 1.0);
@@ -89,22 +116,11 @@ Matrix rankPages(Matrix &probabilityMatrix) {
 
 int main() {
 
-
-    Matrix connectivityMatrix = createConnectivityMatrixFromFile("../connectivityMatrix.txt");
+    Matrix connectivityMatrix = createConnectivityMatrixFromFile("../connectivity.txt");
 
     Matrix stochasticMatrix = createStochasticMatrix(connectivityMatrix);
 
-    MatrixSize matrixSize = stochasticMatrix.getSize();
-
-    vector<double> evenDistribution;
-    for (int i = 0; i < matrixSize.rows * matrixSize.cols; ++i) {
-        evenDistribution.push_back(1.0 / matrixSize.rows);
-    }
-
-    double p = 0.85;
-
-    Matrix Q(evenDistribution);
-    Matrix probabilityMatrix = stochasticMatrix * p + Q * (1 - p);
+    Matrix probabilityMatrix = createProbabilityMatrix(stochasticMatrix);
 
     Matrix rank = rankPages(probabilityMatrix);
 
