@@ -1,4 +1,1 @@
-Heung Wai Chan
-A01258687
-
-100% complete
+### Implements a simplified version of google page rank algorithm
